@@ -8,6 +8,19 @@ const app = express();
 app.use(cors({
     origin: 'https://shubham-gaikwad.vercel.app'
 }));
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://shubham-gaikwad.vercel.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+app.options('/clientresponse', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://shubham-gaikwad.vercel.app');
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.status(200).send();
+});
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
