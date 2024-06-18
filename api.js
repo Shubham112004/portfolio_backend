@@ -5,7 +5,9 @@ const cors = require("cors");
 const connectionString = process.env.MONGODB_URI;
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://shubham-gaikwad.vercel.app'
+}));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
