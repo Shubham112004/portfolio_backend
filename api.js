@@ -4,20 +4,30 @@ const cors = require("cors");
 
 const connectionString = process.env.MONGODB_URI;
 
+if (!connectionString) {
+    console.error('MONGODB_URI is not set');
+}
+
 const app = express();
 
-// CORS middleware to allow requests from 'https://shubham-gaikwad.vercel.app'
-app.use(cors({
+const corsOptions = {
     origin: 'https://shubham-gaikwad.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: true,
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.options('*', cors(corsOptions)); // Preflight request handling
+
 // POST request handler for '/clientresponse'
 app.post('/clientresponse', async (req, res) => {
+    console.log('Received request:', req.body);
     const client = new MongoClient(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
         await client.connect();
@@ -31,7 +41,7 @@ app.post('/clientresponse', async (req, res) => {
         console.log('Record inserted');
         res.send({ message: 'Record inserted' });
     } catch (err) {
-        console.error(err); // Log the error for debugging
+        console.error('Error inserting record:', err); // Log the error for debugging
         res.status(500).send({ error: err.message });
     } finally {
         await client.close();
