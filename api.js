@@ -6,13 +6,17 @@ const connectionString = process.env.MONGODB_URI;
 
 const app = express();
 
+// CORS middleware to allow requests from 'https://shubham-gaikwad.vercel.app'
 app.use(cors({
-    origin: 'https://shubham-gaikwad.vercel.app'
+    origin: 'https://shubham-gaikwad.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// POST request handler for '/clientresponse'
 app.post('/clientresponse', async (req, res) => {
     const client = new MongoClient(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
